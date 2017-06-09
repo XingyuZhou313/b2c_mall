@@ -1,21 +1,15 @@
 package cn.e3mall.search_test;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.Query;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.params.SolrParams;
 import org.junit.Test;
 
 public class SolrJTest {

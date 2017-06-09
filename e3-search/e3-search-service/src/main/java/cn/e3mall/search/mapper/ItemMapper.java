@@ -7,4 +7,5 @@ import cn.e3mall.common.pojo.SearchItem;
 public interface ItemMapper {
 	//查询所有的索引库需要的数据
 	List<SearchItem> getItemList();
+	SearchItem getSearchItemById(long itemId);
 }

@@ -10,6 +10,11 @@
   <dependencies>
   	<dependency>
   		<groupId>cn.e3mall</groupId>
+  		<artifactId>e3-manager-dao</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>cn.e3mall</groupId>
   		<artifactId>e3-search-interface</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
@@ -66,6 +71,10 @@
 		<dependency>
 			<groupId>com.github.sgroschupf</groupId>
 			<artifactId>zkclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-all</artifactId>
 		</dependency>
   </dependencies>
   <!-- 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 -->

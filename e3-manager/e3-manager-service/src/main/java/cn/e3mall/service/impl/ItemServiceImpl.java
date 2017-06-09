@@ -1,9 +1,19 @@
 package cn.e3mall.service.impl;
 
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -39,6 +49,11 @@ public class ItemServiceImpl implements ItemService {
 	private TbItemDescMapper itemDescMapper;
 	@Autowired
 	private TbItemParamMapper itemParamMapper;
+	@Autowired
+	private JmsTemplate jmsTemplate;
+	@Autowired
+	private Destination topicDestination;
+	
 	@Override
 	public TbItem getItemById(long itemId) {
 		TbItem tbItem = itemMapper.selectByPrimaryKey(itemId);
@@ -60,10 +75,12 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * 添加商品信息 
+	 * 添加商品信息  
+	 * 添加商品信息成功后 通过mq实现同步到索引库
 	 */
 	public E3Result addItem(TbItem tbItem, String desc) {
-		tbItem.setId(IDUtils.genItemId());
+		final long itemId=IDUtils.genItemId();
+		tbItem.setId(itemId);
 		tbItem.setStatus((byte) 1);
 		tbItem.setCreated(new Date());
 		tbItem.setUpdated(new Date());
@@ -74,6 +91,17 @@ public class ItemServiceImpl implements ItemService {
 		tbItemDesc.setCreated(new Date());
 		tbItemDesc.setUpdated(new Date());
 		itemDescMapper.insert(tbItemDesc);
+		//发布消息
+		//使用模板对象
+		jmsTemplate.send(topicDestination, new MessageCreator() {
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				TextMessage textMessage = session.createTextMessage();
+				//发送消息  将商品id传递过去
+				textMessage.setText(itemId+"");
+				return textMessage;
+			}
+		});
 		return E3Result.ok();
 	}
 
