@@ -87,7 +87,20 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.3</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!--生成静态html  -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-all</artifactId>
+		</dependency>
+   </dependencies>
 	
 	<build>
 		<plugins>
@@ -97,7 +110,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<configuration>
 					<path>/</path>
-					<port>8086</port>
+					<port>8186</port>
 				</configuration>
 			</plugin>
 		</plugins>

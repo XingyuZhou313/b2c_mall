@@ -49,6 +49,7 @@
          <li>
             <div class="l-wrap">
 				<div class="pic">
+					<!--http://localhost/item/${item.id}.html 访问freemarker生成的静态资源 -->
 					<a class="trackref" href="http://localhost:8086/item/${item.id}.html" title="" target="_blank">
 						<img src="${item.images[0]}" style="display:inline"/>
 					</a>

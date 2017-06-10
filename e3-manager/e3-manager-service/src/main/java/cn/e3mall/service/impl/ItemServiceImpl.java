@@ -11,7 +11,9 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,11 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import cn.e3mall.common.jedis.JedisClient;
 import cn.e3mall.common.pojo.E3Result;
 import cn.e3mall.common.pojo.EasyUIResult;
 import cn.e3mall.common.utils.IDUtils;
+import cn.e3mall.common.utils.JsonUtils;
 import cn.e3mall.mapper.TbItemDescMapper;
 import cn.e3mall.mapper.TbItemMapper;
 import cn.e3mall.mapper.TbItemParamMapper;
@@ -53,10 +57,36 @@ public class ItemServiceImpl implements ItemService {
 	private JmsTemplate jmsTemplate;
 	@Autowired
 	private Destination topicDestination;
+	@Autowired
+	private JedisClient jedisClient;
+	@Value("${ITEM_INFO_EXPIRE}")
+	private Integer ITEM_INFO_EXPIRE;
 	
-	@Override
+	/**
+	 * 根据id查询item  加入缓存
+	 * 先从redis数据库中进行查询
+	 * 如果redis数据库中没有 查询mysql数据库
+	 * 将查出的数据存入redis 设置两小时后过期  为了节省redis的内存资源
+	 */
 	public TbItem getItemById(long itemId) {
+		try {
+			String json = jedisClient.get("ITEM_INFO:"+itemId+":BASE");
+			if (StringUtils.isNotBlank(json)) {
+				TbItem tbItem = JsonUtils.jsonToPojo(json, TbItem.class);
+				System.out.println("使用了redis缓存！！");
+				return tbItem;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		TbItem tbItem = itemMapper.selectByPrimaryKey(itemId);
+		try {
+			jedisClient.set("ITEM_INFO:"+itemId+":BASE", JsonUtils.objectToJson(tbItem));
+			jedisClient.expire("ITEM_INFO:"+itemId+":BASE", ITEM_INFO_EXPIRE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return tbItem;
 	}
 
@@ -139,7 +169,24 @@ public class ItemServiceImpl implements ItemService {
 	 * 根据id查询商品描述信息
 	 */
 	public TbItemDesc getItemDescById(long itemDescId) {
-		return itemDescMapper.selectByPrimaryKey(itemDescId);
+		try {
+			String json = jedisClient.get("ITEM_INFO:"+itemDescId+":DESC");
+			if (StringUtils.isNotBlank(json)) {
+				TbItemDesc itemDesc = JsonUtils.jsonToPojo(json, TbItemDesc.class);
+				System.out.println("使用了redis缓存！！");
+				return itemDesc;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TbItemDesc itemDesc =itemDescMapper.selectByPrimaryKey(itemDescId);
+		try {
+			jedisClient.set("ITEM_INFO:"+itemDescId+":DESC", JsonUtils.objectToJson(itemDesc));
+			jedisClient.expire("ITEM_INFO:"+itemDescId+":DESC", ITEM_INFO_EXPIRE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itemDesc;
 	}
 
 	@Override
