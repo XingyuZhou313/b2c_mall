@@ -269,11 +269,11 @@ function buyelse(pid){
 //@param bs  加入时是否验证商品的礼品袋开关  1,是;0,否
 //@param obj 加入按钮对象
 //@param cfrom 从哪里点击的购物按钮
-function cartAdd(product_id,cart_type,opencity_id, flag,bs, obj, cfrom){
+function cartAdd(product_id){
     //取购物车商品数量
 	var num = $("#number_" + product_id).val();
 	//拼装url参数，做跳转
-	location.href="http://localhost:8089/cart/add/"+product_id+".html?num=" + num;
+	location.href="http://localhost:8189/cart/add/"+product_id+".html?num=" + num;
 }
 
 //首页添加购物车
