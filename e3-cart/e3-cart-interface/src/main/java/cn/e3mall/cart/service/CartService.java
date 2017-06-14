@@ -11,6 +11,8 @@ public interface CartService {
 	//查询购物车信息
 	List<TbItem> getCartList(long uid);
 	//修改购物车信息
-	
+	void updateCart(long uid,long itemId,Integer num);
 	//删除购物车信息
+	void deleteCart(long uid,long itemId);
+	void mergeCartList(List<TbItem> cartList, Long id);
 }

@@ -59,5 +59,25 @@ public class CartServiceImpl implements CartService {
 		}
 		return cartList;
 	}
+	//修改redis中该用户的商品信息
+	public void updateCart(long uid, long itemId, Integer num) {
+		//取出该商品信息
+		String json = jedisClient.hget("cart:"+uid, itemId+"");
+		TbItem tbItem = JsonUtils.jsonToPojo(json, TbItem.class);
+		tbItem.setNum(num);
+		jedisClient.hset("cart:"+uid, itemId+"", JsonUtils.objectToJson(tbItem));
+	}
+	@Override
+	public void deleteCart(long uid, long itemId) {
+		//定位到要删除的商品信息删除
+		jedisClient.hdel("cart:"+uid,itemId+"");
+	}
+	//合并购物车
+	public void mergeCartList(List<TbItem> cartList, Long uid) {
+		for (TbItem tbItem : cartList) {
+			//调用现成的方式实现 购物车的合并
+			addCartList(uid, tbItem.getId(), tbItem.getNum());
+		}
+	}
 	
 }
