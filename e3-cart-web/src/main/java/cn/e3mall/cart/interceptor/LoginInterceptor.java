@@ -29,7 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 		//根据token信息获取cookie中的登陆的用户的信息
-		String token = CookieUtils.getCookieValue(request,COOKE_TOKEN_KEY);
+		String token = CookieUtils.getCookieValue(request,COOKE_TOKEN_KEY,true);
 		if (StringUtils.isBlank(token)) {
 			//如果没有登陆信息  放行
 			return true;

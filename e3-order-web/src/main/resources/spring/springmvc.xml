@@ -23,10 +23,17 @@
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="cn.e3mall.order.interceptor.LoginInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
 	<!-- 添加服务的引用 -->
 	<!-- 引用dubbo服务 -->
 	<dubbo:application name="e3-order-web"/>
 	<dubbo:registry protocol="zookeeper" address="192.168.25.128:2181"/>	
-	<!-- <dubbo:reference interface="cn.e3mall.sso.service.UserService" id="userService" /> -->
+	<dubbo:reference interface="cn.e3mall.sso.service.UserService" id="userService" />
+	<dubbo:reference interface="cn.e3mall.cart.service.CartService" id="cartService" />
+	<dubbo:reference interface="cn.e3mall.order.service.OrderService" id="orderService" />
 </beans>

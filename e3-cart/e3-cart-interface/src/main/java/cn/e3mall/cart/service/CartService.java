@@ -2,6 +2,7 @@ package cn.e3mall.cart.service;
 
 import java.util.List;
 
+import cn.e3mall.common.pojo.E3Result;
 import cn.e3mall.pojo.TbItem;
 
 public interface CartService {
@@ -15,4 +16,6 @@ public interface CartService {
 	//删除购物车信息
 	void deleteCart(long uid,long itemId);
 	void mergeCartList(List<TbItem> cartList, Long id);
+	//清空购物车信息
+	E3Result clearCart(long userId);
 }

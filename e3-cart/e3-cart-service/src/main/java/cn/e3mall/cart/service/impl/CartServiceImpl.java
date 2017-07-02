@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import cn.e3mall.cart.service.CartService;
 import cn.e3mall.common.jedis.JedisClient;
+import cn.e3mall.common.pojo.E3Result;
 import cn.e3mall.common.utils.JsonUtils;
 import cn.e3mall.mapper.TbItemMapper;
 import cn.e3mall.pojo.TbItem;
@@ -78,6 +79,12 @@ public class CartServiceImpl implements CartService {
 			//调用现成的方式实现 购物车的合并
 			addCartList(uid, tbItem.getId(), tbItem.getNum());
 		}
+	}
+	
+	//清空购物车信息
+	public E3Result clearCart(long userId) {
+		jedisClient.del("cart:"+userId);
+		return E3Result.ok();
 	}
 	
 }
